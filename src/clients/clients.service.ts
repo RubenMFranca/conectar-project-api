@@ -1,7 +1,11 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import { Inject, Injectable, NotFoundException } from '@nestjs/common';
+import Op from 'sequelize/lib/operators';
 import { User } from '../users/users.model';
 import { Client } from './client.model';
 import { ClientDto } from './dto/client.dto';
+import { FindAllClientsDto } from './dto/find-all-clients.dto';
 
 @Injectable()
 export class ClientsService {
@@ -20,13 +24,30 @@ export class ClientsService {
     });
   }
 
-  async findAll(user: User): Promise<Client[]> {
-    if (user.role === 'admin') {
-      return this.clientsRepository.findAll<Client>();
+  async findAll(user: User, query?: FindAllClientsDto): Promise<Client[]> {
+    const whereCondition: any = {};
+
+    if (query?.nomeFachada) {
+      whereCondition.nomeFachada = { [Op.like]: `%${query.nomeFachada}%` };
     }
-    return this.clientsRepository.findAll<Client>({
-      where: { assignedToUserId: user.id },
-    });
+
+    if (query?.cnpj) {
+      whereCondition.cnpj = { [Op.like]: `%${query.cnpj}%` };
+    }
+
+    if (query?.status) {
+      whereCondition.status = query.status;
+    }
+
+    if (query?.razaoSocial) {
+      whereCondition.razaoSocial = { [Op.like]: `%${query.razaoSocial}%` };
+    }
+
+    if (user.role !== 'admin') {
+      whereCondition.assignedToUserId = user.id;
+    }
+
+    return this.clientsRepository.findAll<Client>({ where: whereCondition });
   }
 
   async findOne(id: number, user: User): Promise<Client> {
