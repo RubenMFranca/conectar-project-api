@@ -16,20 +16,41 @@ export class Client extends Model {
     type: DataType.STRING,
     allowNull: false,
   })
-  name: string;
+  nomeFachada!: string;
+
+  @Column({
+    type: DataType.STRING,
+    allowNull: false,
+  })
+  cnpj!: string;
 
   @Column({
     type: DataType.STRING,
   })
-  email: string;
+  razaoSocial!: string;
+
+  @Column({
+    type: DataType.STRING,
+  })
+  status!: string;
+
+  @Column({
+    type: DataType.STRING,
+  })
+  tag!: string;
+
+  @Column({
+    type: DataType.BOOLEAN,
+  })
+  conecta_plus!: boolean;
 
   @ForeignKey(() => User)
   @Column({
     type: DataType.INTEGER,
     allowNull: false,
   })
-  assignedToUserId: number;
+  assignedToUserId!: number;
 
   @BelongsTo(() => User)
-  assignedToUser: User;
+  assignedToUser!: User;
 }
