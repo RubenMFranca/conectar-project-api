@@ -1,3 +1,6 @@
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import {
@@ -8,7 +11,6 @@ import {
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
-import { User } from '../users/users.model';
 import { UsersService } from '../users/users.service';
 import { LoginDto } from './dto/login.dto';
 import { RegisterDto } from './dto/register.dto';
@@ -32,34 +34,20 @@ export class AuthService {
     return result as UserResponseDto;
   }
 
-  // async validateUser(email: string, pass: string): Promise<User | null> {
-  //   const user = await this.usersService.findByEmail(email);
-
-  //   if (!user || !user.password) return null;
-
-  //   const isMatch = await bcrypt.compare(pass, user.password);
-  //   return isMatch ? user : null;
-  // }
-  async validateUser(email: string, pass: string): Promise<User | null> {
+  async validateUser(email: string, pass: string): Promise<any> {
     const user = await this.usersService.findByEmail(email);
-
-    console.log('--- DEPURANDO VALIDAÇÃO ---');
-    console.log('1. Usuário encontrado:', user ? 'Sim' : 'Não');
 
     if (!user) {
       return null;
     }
 
-    console.log('2. Senha do banco de dados (hash):', user.password);
-    console.log('3. Senha enviada na requisição:', pass);
+    const passwordHash = user.getDataValue('password');
 
-    if (!user.password) {
-      console.log('ERRO: Senha do banco é nula ou indefinida.');
+    if (!passwordHash) {
       return null;
     }
 
-    const isMatch = await bcrypt.compare(pass, user.password);
-    console.log('4. Resultado da comparação (bcrypt):', isMatch);
+    const isMatch = await bcrypt.compare(pass, passwordHash);
 
     return isMatch ? user : null;
   }
