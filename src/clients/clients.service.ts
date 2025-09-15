@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import { Inject, Injectable, NotFoundException } from '@nestjs/common';
-import Op from 'sequelize/lib/operators';
+import { Op, Sequelize } from 'sequelize';
 import { User } from '../users/users.model';
 import { Client } from './client.model';
 import { ClientDto } from './dto/client.dto';
@@ -32,7 +32,22 @@ export class ClientsService {
     }
 
     if (query?.cnpj) {
-      whereCondition.cnpj = { [Op.like]: `%${query.cnpj}%` };
+      const cleanCnpj = query.cnpj.replace(/\D/g, '');
+
+      whereCondition.cnpj = Sequelize.where(
+        Sequelize.fn(
+          'REPLACE',
+          Sequelize.fn(
+            'REPLACE',
+            Sequelize.fn('REPLACE', Sequelize.col('cnpj'), '.', ''),
+            '-',
+            '',
+          ),
+          '/',
+          '',
+        ),
+        { [Op.like]: `%${cleanCnpj}%` },
+      );
     }
 
     if (query?.status) {
