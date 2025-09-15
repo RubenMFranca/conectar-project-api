@@ -50,30 +50,23 @@ export class ClientsService {
     return this.clientsRepository.findAll<Client>({ where: whereCondition });
   }
 
-  async findOne(id: number, user: User): Promise<Client> {
+  async findOne(id: number): Promise<Client> {
     const client = await this.clientsRepository.findByPk<Client>(id);
     if (!client) {
       throw new NotFoundException('Client not found');
     }
-    if (user.role !== 'admin' && client.assignedToUserId !== user.id) {
-      throw new NotFoundException('Client not found or you do not have access');
-    }
     return client;
   }
 
-  async update(
-    id: number,
-    clientDto: ClientDto,
-    user: User,
-  ): Promise<[number]> {
-    const client = await this.findOne(id, user);
+  async update(id: number, clientDto: ClientDto): Promise<[number]> {
+    const client = await this.findOne(id);
     return this.clientsRepository.update(clientDto, {
       where: { id: client.id },
     });
   }
 
-  async delete(id: number, user: User): Promise<number> {
-    const client = await this.findOne(id, user);
+  async delete(id: number): Promise<number> {
+    const client = await this.findOne(id);
     return this.clientsRepository.destroy({ where: { id: client.id } });
   }
 }

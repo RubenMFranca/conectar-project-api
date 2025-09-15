@@ -14,7 +14,6 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { Roles } from '../common/decorators/roles.decorator';
 import { RolesGuard } from '../common/guards/roles.guard';
 import { ClientsService } from './clients.service';
 import { ClientDto } from './dto/client.dto';
@@ -37,23 +36,19 @@ export class ClientsController {
   }
 
   @Get(':id')
-  async findOne(@Param('id') id: string, @Req() req) {
-    return this.clientsService.findOne(parseInt(id), req.user);
+  async findOne(@Param('id') id: string) {
+    return this.clientsService.findOne(parseInt(id));
   }
 
   @Put(':id')
-  async update(
-    @Param('id') id: string,
-    @Body() clientDto: ClientDto,
-    @Req() req,
-  ) {
-    return this.clientsService.update(parseInt(id), clientDto, req.user);
+  async update(@Param('id') id: string, @Body() clientDto: ClientDto) {
+    return this.clientsService.update(parseInt(id), clientDto);
   }
 
   @Delete(':id')
-  @Roles('admin')
+  @UseGuards(AuthGuard('jwt'))
   @UseGuards(RolesGuard)
-  async delete(@Param('id') id: string, @Req() req) {
-    return this.clientsService.delete(parseInt(id), req.user);
+  async delete(@Param('id') id: string) {
+    return this.clientsService.delete(parseInt(id));
   }
 }
