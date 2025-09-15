@@ -14,13 +14,12 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       ignoreExpiration: false,
-      secretOrKey: 'SEGREDO_SUPER_SECRETO', // Use uma variável de ambiente em produção!
+      secretOrKey: 'SEGREDO_SUPER_SECRETO',
     });
   }
 
   async validate(payload: any) {
     const user = await this.usersService.findById(payload.sub);
-    // Retorna o objeto do usuário, que será anexado a `req.user`
     return { id: payload.sub, email: payload.email, role: payload.role };
   }
 }

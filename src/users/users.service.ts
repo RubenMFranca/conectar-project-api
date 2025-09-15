@@ -14,14 +14,9 @@ export class UsersService {
   async create(userDto: UserDto): Promise<User> {
     const userData = { ...userDto };
 
-    // Criptografa a senha antes de criar o usuário
     if (userData.password) {
       userData.password = await bcrypt.hash(userData.password, 10);
     }
-
-    console.log('--- DEPURANDO CRIAÇÃO ---');
-    console.log('Senha a ser salva (hash):', userData.password);
-    console.log('-------------------------');
 
     return this.usersRepository.create(userData);
   }
@@ -29,7 +24,6 @@ export class UsersService {
   async findByEmail(email: string): Promise<User | null> {
     return this.usersRepository.findOne<User>({
       where: { email },
-      // Adicione esta linha para garantir que a senha seja retornada
       attributes: [
         'id',
         'name',
