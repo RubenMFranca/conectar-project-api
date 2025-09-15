@@ -49,14 +49,6 @@ Este projeto utiliza **SQLite** para um banco de dados local.
 - O arquivo do banco de dados (`database.sqlite`) será criado automaticamente na raiz do projeto na primeira vez que você o iniciar.
 - As tabelas do Sequelize serão sincronizadas automaticamente.
 
-### Variáveis de Ambiente
-
-Crie um arquivo `.env` na raiz do projeto. É crucial para a segurança do JWT.
-
-**`/.env`**
-
-Substitua `suaChaveSecretaAqui` por uma string longa e aleatória.
-
 ## Rodando o Projeto
 
 Para iniciar o servidor em modo de desenvolvimento, execute o seguinte comando:
