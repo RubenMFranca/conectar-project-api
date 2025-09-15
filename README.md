@@ -30,6 +30,12 @@ API backend do projeto **Conéctar**, desenvolvida com **NestJS**, responsável 
 
 ---
 
+## 📚 Documentação de API
+
+As rotas da API podem ser testadas diretamente no Postman usando a coleção disponível em:
+
+`postman/Conectar.postman_collection.json`
+
 ## Instalação
 
 1. Clone este repositório para o seu ambiente local:
